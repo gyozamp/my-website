@@ -1,0 +1,32 @@
+---
+interface Props {
+  TopLeft: string;
+  TopRight: string;
+  BottomLeft: string;
+  BottomRight: string;
+}
+
+const { TopLeft, TopRight, BottomLeft, BottomRight } = Astro.props;
+---
+
+<nav class="fixed inset-0 pointer-events-none z-50 p-8 md:p-12">
+  <div class="relative w-full h-full uppercase text-xs md:text-sm font-medium tracking-[0.2em] text-black">
+    
+    <div class="absolute top-0 left-0 pointer-events-auto cursor-pointer hover:opacity-40 transition-opacity">
+      {TopLeft}
+    </div>
+
+    <div class="absolute top-0 right-0 pointer-events-auto cursor-pointer hover:opacity-40 transition-opacity text-right">
+      {TopRight}
+    </div>
+
+    <div class="absolute bottom-0 left-0 pointer-events-auto cursor-pointer hover:opacity-40 transition-opacity">
+      {BottomLeft}
+    </div>
+
+    <div class="absolute bottom-0 right-0 pointer-events-auto cursor-pointer hover:opacity-40 transition-opacity text-right">
+      {BottomRight}
+    </div>
+
+  </div>
+</nav>
