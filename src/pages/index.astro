@@ -1,8 +1,501 @@
----
+<!-- ---
 import ComingSoon from '../components/ComingSoon.astro';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
 	<ComingSoon />
-</Layout>
+</Layout> -->
+
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Il Tempo di New York</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=Franklin+Gothic+Medium:ital@0;1&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:     #121212;
+      --ink:       #333333;
+      --muted:     #6e6e6e;
+      --rule:      #e2e2e2;
+      --rule-dark: #adadad;
+      --bg:        #ffffff;
+      --accent:    #c9303a;
+      --col-max:   730px;
+    }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    .nyt-topbar {
+      border-bottom: 1px solid var(--rule-dark);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .nyt-topbar-left, .nyt-topbar-right {
+      display: flex; gap: 18px; align-items: center;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+    }
+    .nyt-topbar-left a, .nyt-topbar-right a { color: inherit; text-decoration: none; }
+    .nyt-topbar-left a:hover, .nyt-topbar-right a:hover { color: var(--black); }
+    .nyt-logo {
+      font-family: 'Playfair Display', 'Times New Roman', serif;
+      font-size: 28px; font-weight: 900; letter-spacing: -.5px;
+      color: var(--black); text-decoration: none; white-space: nowrap;
+    }
+    .nyt-sections {
+      border-bottom: 2px solid var(--black);
+      border-top: 1px solid var(--rule-dark);
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .nyt-sections::-webkit-scrollbar { display: none; }
+    .nyt-sections ul { display: flex; list-style: none; padding: 0 24px; }
+    .nyt-sections li a {
+      display: block; padding: 10px 14px;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 13px; letter-spacing: .05em; text-transform: uppercase;
+      color: var(--black); text-decoration: none; white-space: nowrap;
+    }
+    .nyt-sections li a:hover { color: var(--accent); }
+    .nyt-sections li.active a { color: var(--accent); border-bottom: 3px solid var(--accent); }
+    .nyt-datebar {
+      padding: 8px 24px; border-bottom: 1px solid var(--rule);
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 12px; letter-spacing: .04em; color: var(--muted);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .article-wrapper { max-width: 1080px; margin: 0 auto; padding: 40px 24px; }
+    .article-section-label {
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 16px; display: block;
+    }
+    .article-headline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(28px, 4vw, 46px); font-weight: 700;
+      line-height: 1.12; letter-spacing: -.3px;
+      color: var(--black); max-width: var(--col-max); margin-bottom: 18px;
+    }
+    .article-deck {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: clamp(17px, 2.2vw, 21px); font-weight: 300;
+      line-height: 1.4; color: var(--ink);
+      max-width: var(--col-max); margin-bottom: 28px;
+    }
+    .article-byline {
+      border-top: 3px solid var(--black); border-bottom: 1px solid var(--rule-dark);
+      padding: 10px 0; max-width: var(--col-max); margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+    }
+    .byline-author {
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--black);
+    }
+    .byline-author a { color: inherit; text-decoration: none; font-weight: bold; }
+    .byline-author a:hover { text-decoration: underline; }
+    .byline-meta {
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 12px; color: var(--muted); letter-spacing: .03em;
+    }
+    .article-share {
+      display: flex; gap: 10px; max-width: var(--col-max);
+      margin-bottom: 32px; align-items: center;
+    }
+    .share-btn {
+      display: flex; align-items: center; gap: 6px; padding: 7px 14px;
+      border: 1px solid var(--rule-dark); background: transparent; cursor: pointer;
+      font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+      font-size: 12px; letter-spacing: .05em; text-transform: uppercase;
+      color: var(--ink); border-radius: 2px; transition: background .15s, color .15s;
+    }
+    .share-btn:hover { background: var(--black); color: #fff; }
+    .share-btn svg { flex-shrink: 0; }
+    .gift-btn {
+      margin-left: auto; font-style: italic; font-family: Georgia, serif;
+      font-size: 13px; text-transform: none; letter-spacing: 0; border-color: var(--rule);
+    }
+    .article-hero { max-width: var(--col-max); margin-bottom: 8px; }
+    .article-hero img { width: 100%; display: block; }
+    .article-caption {
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 12px; color: var(--muted); line-height: 1.5;
+      max-width: var(--col-max); margin-bottom: 36px;
+      padding-top: 6px; border-top: 1px solid var(--rule);
+    }
+    .article-caption em { display: block; margin-top: 3px; font-style: normal; color: #aaa; }
+    .article-body { max-width: var(--col-max); }
+    .article-body p {
+      margin-bottom: 26px; font-size: 18px; font-weight: 300; color: var(--ink);
+    }
+    .article-body p:first-child::first-letter {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 76px; font-weight: 900; float: left;
+      line-height: .8; margin-right: 6px; margin-top: 6px; color: var(--black);
+    }
+    .article-body h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24px; font-weight: 700; color: var(--black);
+      margin: 40px 0 14px; line-height: 1.25;
+    }
+    .article-body blockquote {
+      border-left: 4px solid var(--accent);
+      margin: 36px 0; padding: 4px 24px;
+      font-size: 22px; font-style: italic; font-weight: 400;
+      color: var(--black); line-height: 1.45;
+    }
+    .article-body blockquote cite {
+      display: block; margin-top: 10px; font-size: 13px; font-style: normal;
+      font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+      letter-spacing: .05em; text-transform: uppercase; color: var(--muted);
+    }
+    .article-body .pullquote {
+      border: none; border-top: 3px solid var(--black); border-bottom: 1px solid var(--rule-dark);
+      margin: 40px 0; padding: 18px 0 16px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px; font-weight: 700; font-style: normal;
+      color: var(--black); line-height: 1.3;
+    }
+    .article-body .pullquote cite {
+      font-size: 13px; font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+      font-weight: normal; font-style: normal;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--muted); display: block; margin-top: 10px;
+    }
+    .cartello {
+      background: #fffdf5; border: 1px solid #d4c89a;
+      border-left: 4px solid #b5a04a;
+      margin: 32px 0; padding: 20px 28px;
+      font-family: Georgia, serif; font-size: 20px;
+      font-style: italic; color: #3a3220; line-height: 1.6;
+    }
+    .article-inline-img { margin: 36px 0 6px; }
+    .article-inline-img img { width: 100%; display: block; }
+    .article-inline-img figcaption {
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 12px; color: var(--muted); padding-top: 6px;
+      border-top: 1px solid var(--rule); line-height: 1.5; margin-bottom: 28px;
+    }
+    .article-tags {
+      margin-top: 48px; border-top: 2px solid var(--black);
+      padding-top: 16px; display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .article-tags a {
+      display: inline-block; border: 1px solid var(--rule-dark);
+      padding: 5px 12px;
+      font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+      font-size: 12px; letter-spacing: .05em; text-transform: uppercase;
+      color: var(--black); text-decoration: none; border-radius: 2px;
+    }
+    .article-tags a:hover { background: var(--black); color: #fff; border-color: var(--black); }
+    .related-section {
+      max-width: var(--col-max); margin-top: 52px;
+      border-top: 3px solid var(--black); padding-top: 20px;
+    }
+    .related-label {
+      font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+      font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 16px;
+    }
+    .related-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .related-list li { border-bottom: 1px solid var(--rule); padding-bottom: 14px; }
+    .related-list li:last-child { border-bottom: none; padding-bottom: 0; }
+    .related-list a {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px; font-weight: 700; color: var(--black);
+      text-decoration: none; line-height: 1.3;
+    }
+    .related-list a:hover { text-decoration: underline; }
+    .related-list small {
+      display: block; margin-top: 3px;
+      font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+      font-size: 12px; color: var(--muted); letter-spacing: .03em;
+    }
+    footer {
+      margin-top: 80px; border-top: 3px solid var(--black);
+      padding: 28px 24px 48px; text-align: center;
+    }
+    footer .footer-logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px; font-weight: 900; color: var(--black);
+      display: block; margin-bottom: 14px;
+    }
+    footer nav {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 6px 18px;
+      font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+      font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted);
+    }
+    footer nav a { color: inherit; text-decoration: none; }
+    footer nav a:hover { color: var(--black); }
+    footer .footer-copy {
+      margin-top: 20px;
+      font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+      font-size: 11px; color: var(--muted); letter-spacing: .03em;
+    }
+    @media (max-width: 640px) {
+      .nyt-topbar-left, .nyt-topbar-right { display: none; }
+      .nyt-logo { font-size: 22px; }
+      .article-wrapper { padding: 24px 16px; }
+      .article-body p:first-child::first-letter { font-size: 56px; }
+      .share-btn span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nyt-topbar">
+      <div class="nyt-topbar-left">
+        <a href="#">Venerdì, 19 Giugno 2026</a>
+        <a href="#">Edizione del giorno</a>
+      </div>
+      <a class="nyt-logo" href="#">Il Tempo di New York</a>
+      <div class="nyt-topbar-right">
+        <a href="#">Accedi</a>
+        <a href="#" style="background:#121212;color:#fff;padding:6px 14px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;font-family:'Franklin Gothic Medium',Arial,sans-serif;">Abbonati</a>
+      </div>
+    </div>
+    <nav class="nyt-sections">
+      <ul>
+        <li><a href="#">Mondo</a></li>
+        <li><a href="#">Europa</a></li>
+        <li><a href="#">Economia</a></li>
+        <li><a href="#">Arte</a></li>
+        <li><a href="#">Scienza</a></li>
+        <li><a href="#">Salute</a></li>
+        <li><a href="#">Sport</a></li>
+        <li><a href="#">Opinioni</a></li>
+        <li><a href="#">Tecnologia</a></li>
+        <li><a href="#">Viaggi</a></li>
+        <li class="active"><a href="#">Italia</a></li>
+        <li><a href="#">Cucina</a></li>
+      </ul>
+    </nav>
+    <div class="nyt-datebar">
+      <span>Venerdì, 19 Giugno 2026</span>
+      <span>Aggiornato alle 11:02</span>
+    </div>
+  </header>
+
+  <main class="article-wrapper">
+
+    <span class="article-section-label">Italia &nbsp;·&nbsp; Cronache di paese</span>
+
+    <h1 class="article-headline">
+      Il corniciaio di San Giorgio del Sannio è sparito a Cuba. Il pappagallo ha tenuto aperto il negozio.
+    </h1>
+
+    <p class="article-deck">
+      Alfonso, 67 anni, noto a tutti come "il camiciaio" nonostante gestisse da vent'anni una corniceria, è scomparso senza lasciare istruzioni ai clienti, un erede designato o le chiavi dell'armadietto del silicone. Al suo posto: un nipote di Milano, quattro pergamene arrotolate e un pappagallo di nome Pasqualino.
+    </p>
+
+    <div class="article-byline">
+      <span class="byline-author">Di <a href="#">Marco Ferrante</a></span>
+      <span class="byline-meta">19 Giugno 2026 &nbsp;·&nbsp; 8 min di lettura</span>
+    </div>
+
+    <div class="article-share">
+      <button class="share-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        <span>Condividi</span>
+      </button>
+      <button class="share-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <span>Commenti</span>
+      </button>
+      <button class="share-btn gift-btn">🎁 Regala questo articolo</button>
+    </div>
+
+    <div class="article-hero">
+      <img
+        src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=730&q=80"
+        alt="Una corniceria italiana"
+        style="aspect-ratio:16/9;object-fit:cover;"
+      />
+    </div>
+    <p class="article-caption">
+      La saracinesca abbassata della Corniceria Artistica Alfonso nel centro di San Giorgio del Sannio, con il cartello che per quasi tre mesi ha tenuto in ostaggio l'intera comunità.
+      <em>Archivio locale</em>
+    </p>
+
+    <article class="article-body">
+
+      <p>
+        Quella che doveva essere una tranquilla storia di pensionamento anticipato si è trasformata, secondo le voci di paese, in una delle vicende più assurde mai raccontate davanti al bar della piazza. Alfonso, 67 anni, conosciuto da tutti come "Alfonso il camiciaio" — nonostante da oltre vent'anni gestisse la storica Corniceria Artistica Alfonso, situata nel centro di San Giorgio del Sannio — sarebbe sparito all'improvviso senza lasciare istruzioni ai clienti. L'ultima volta era stato visto mentre consegnava una cornice dorata a una signora di Calvi e parlava insistentemente di salsa cubana, mojito e di un certo "destino tropicale".
+      </p>
+
+      <p>
+        Nel giro di pochi giorni la saracinesca della corniceria è rimasta abbassata. All'esterno è comparso soltanto un cartello scritto a mano:
+      </p>
+
+      <div class="cartello">"Torno subito."</div>
+
+      <p>
+        Cartello che, secondo i commercianti della zona, è rimasto lì per quasi tre mesi.
+      </p>
+
+      <h2>Una città in cornice — e in crisi</h2>
+
+      <p>
+        Nel frattempo, a San Giorgio del Sannio si è scatenato il caos. Una professoressa attendeva da settimane la cornice per il diploma della figlia, un geometra reclamava una stampa del Vesuvio del 1983, mentre tre neolaureati continuavano a passare davanti al negozio con le pergamene arrotolate sotto il braccio, nella speranza di vedere un segno di vita.
+      </p>
+
+      <blockquote>
+        "Le pergamene avevano ormai assunto la forma permanente di cannoli siciliani."
+        <cite>— Un cliente, che ha preferito restare anonimo</cite>
+      </blockquote>
+
+      <p>
+        Nel frattempo, amici e parenti di Alfonso avevano soltanto una certezza: l'uomo era partito per Cuba con una ragazza conosciuta casualmente a Napoli durante una fiera del ricamo creativo. La ragazza, stando alle indiscrezioni, si chiamava Maribel e aveva convinto Alfonso a "seguire il ritmo della vita". Lui, entusiasta, aveva lasciato la gestione del negozio a "chi di dovere", senza però specificare a chi.
+      </p>
+
+      <blockquote class="pullquote">
+        Aveva lasciato un pappagallo, un ficus e quattro diplomi incorniciati a metà. Nessuna istruzione. Nessuna chiave dell'armadietto del silicone.
+        <cite>— Luigi, nipote, parlando da dietro il bancone</cite>
+      </blockquote>
+
+      <h2>Entra in scena Luigi, da Milano, via podcast</h2>
+
+      <p>
+        Fu allora che entrò in scena Luigi, il nipote. Originario di Como ma trasferitosi a Milano per lavoro, impiegato presso una ditta specializzata in insegne luminose e appassionato di podcast sui bonsai, Luigi ricevette una telefonata dalla zia Concetta.
+      </p>
+
+      <p>
+        — <em>"Luigi, tuo zio è a Cuba e qui stanno impazzendo per le cornici!"</em>
+      </p>
+
+      <p>
+        Senza capire bene la gravità della situazione, Luigi prese un Frecciarossa, arrivò a San Giorgio del Sannio e aprì finalmente la corniceria. La scena che si trovò davanti lo lasciò senza parole: dentro c'erano decine di lavori incompleti, un ritratto di Padre Pio senza vetro, quattro pergamene di laurea, un poster di Gigi D'Alessio — e un pappagallo. Nessuno sapeva dell'esistenza del pappagallo.
+      </p>
+
+      <figure class="article-inline-img">
+        <img
+          src="https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=730&q=80"
+          alt="Un pappagallo colorato"
+          style="aspect-ratio:3/2;object-fit:cover;"
+        />
+        <figcaption>Pasqualino, descritto dagli anziani del paese come "il soggetto più informato dell'intero municipio." &nbsp;·&nbsp; Illustrazione fotografica</figcaption>
+      </figure>
+
+      <p>
+        L'animale, appena vide Luigi, esclamò:
+      </p>
+
+      <div class="cartello">"Alfò, porta il silicone!"</div>
+
+      <p>
+        Si scoprì così che Alfonso viveva da anni in compagnia del volatile, chiamato Pasqualino, che aveva imparato tutte le frasi pronunciate in laboratorio. Luigi, pur non avendo mai incorniciato nulla in vita sua, decise di mettersi all'opera guardando tutorial su internet e chiedendo consigli agli anziani del paese.
+      </p>
+
+      <h2>L'apprendistato di Luigi il provvisorio</h2>
+
+      <p>
+        I primi risultati furono disastrosi. Una signora si vide consegnare una cornice ottagonale per una fotografia quadrata, mentre il diploma di un farmacista finì accidentalmente montato al contrario. Ma col passare delle settimane Luigi diventò una celebrità locale. La gente iniziò a chiamarlo <em>"Luigi il nipote del tropicale"</em>.
+      </p>
+
+      <p>
+        Quando finalmente sembrava che tutto fosse tornato alla normalità, arrivò una cartolina da Cuba. Sul retro c'era scritto:
+      </p>
+
+      <div class="cartello">"Cari clienti, sto bene. Maribel mi ha insegnato il merengue. Non buttate il ficus. Torno presto.<br><br><span style="font-size:15px;">— Alfonso</span>"</div>
+
+      <p>
+        La cartolina provocò un acceso dibattito al bar del paese, soprattutto perché nessuno ricordava l'esistenza di un ficus.
+      </p>
+
+      <h2>Il ficus, il pappagallo e trent'anni di segreti</h2>
+
+      <p>
+        Fu Pasqualino a risolvere il mistero. Una mattina, alle 8:15 precise, iniziò a gridare dal suo trespolo con l'urgenza di chi aspetta da tre mesi di dire una cosa importante:
+      </p>
+
+      <div class="cartello">"Innaffia il ficus! Innaffia il ficus!"</div>
+
+      <p>
+        Dopo ore di ricerche, Luigi scoprì dietro una montagna di cornici un enorme ficus ancora vivo e perfettamente irrigato da una perdita del condizionatore. Secondo alcuni anziani del posto, quella pianta aveva almeno trent'anni e conosceva più segreti del Comune.
+      </p>
+
+      <p>
+        Quanto ad Alfonso, le cronache fantasiose continuarono a rincorrersi. C'era chi sosteneva che stesse aprendo una scuola di ballo all'Avana, chi parlava di un allevamento di iguane e chi giurava di averlo visto in videochiamata mentre spiegava a un gruppo di cubani come si monta una cornice in legno di castagno.
+      </p>
+
+      <p>
+        Nel frattempo, a San Giorgio del Sannio, Luigi aveva appeso fuori dal negozio un nuovo cartello:
+      </p>
+
+      <div class="cartello">"Corniceria Artistica Alfonso – Gestione provvisoria.<br>Se cercate Alfonso, provate a Cuba."</div>
+
+      <p>
+        E sotto, scritto dal pappagallo con il becco su un foglio lasciato troppo vicino alla gabbia:
+      </p>
+
+      <div class="cartello" style="border-left-color: var(--accent);">"Alfò, porta il silicone!"</div>
+
+      <div class="article-tags">
+        <a href="#">Italia</a>
+        <a href="#">Campania</a>
+        <a href="#">San Giorgio del Sannio</a>
+        <a href="#">Cronaca</a>
+        <a href="#">Cuba</a>
+        <a href="#">Storie di paese</a>
+      </div>
+
+    </article>
+
+    <aside class="related-section">
+      <p class="related-label">Articoli correlati</p>
+      <ul class="related-list">
+        <li>
+          <a href="#">I borghi del Sud che resistono grazie a chi torna — o a chi non se ne va mai</a>
+          <small>12 Aprile 2026</small>
+        </li>
+        <li>
+          <a href="#">Cuba fa ancora sognare. E stavolta non tornano.</a>
+          <small>22 Gennaio 2026</small>
+        </li>
+        <li>
+          <a href="#">Il commercio di prossimità in Italia meridionale: tra resilienza e abbandono</a>
+          <small>3 Febbraio 2026</small>
+        </li>
+      </ul>
+    </aside>
+
+  </main>
+
+  <footer>
+    <a class="footer-logo" href="#">Il Tempo di New York</a>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Mondo</a>
+      <a href="#">Europa</a>
+      <a href="#">Politica</a>
+      <a href="#">Scienza</a>
+      <a href="#">Salute</a>
+      <a href="#">Sport</a>
+      <a href="#">Arte</a>
+      <a href="#">Viaggi</a>
+      <a href="#">Necrologi</a>
+      <a href="#">Contatti</a>
+      <a href="#">Privacy</a>
+      <a href="#">Termini di servizio</a>
+    </nav>
+    <p class="footer-copy">© 2026 Il Tempo di New York Company</p>
+  </footer>
+
+</body>
+</html>
